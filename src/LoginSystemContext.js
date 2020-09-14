@@ -37,7 +37,7 @@ export default  class LoginSystemContext extends Component {
         return new Promise(function(resolve,reject) {
             const axiosClient = getAxiosClient();
             axiosClient( {
-              url: that.props.authServer+'/refresh_token',
+              url: that.props.authServerHostname+that.props.authServer+'/refresh_token',
               method: 'get'
             }).then(function(res) {
                 return res.data;  

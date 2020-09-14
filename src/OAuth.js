@@ -53,7 +53,7 @@ export default  class OAuth extends Component {
 				let authRequest={client_id:paramsObject.client_id,redirect_uri:paramsObject.redirect_uri,response_type:paramsObject.response_type,scope:paramsObject.scope,state:paramsObject.state}
 				// lookup oauth client extra label info
 				 if (that.props.startWaiting) that.props.startWaiting();
-				 fetch(that.props.authServer+'/oauthclient?clientId='+paramsObject.client_id, {
+				 fetch(that.props.authServerHostname + that.props.authServer+'/oauthclient?clientId='+paramsObject.client_id, {
 					  method: 'GET',
 					  headers: {
 						'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ export default  class OAuth extends Component {
 				<li>Interact with this website on your behalf</li>
 			</ul>
 						
-			<form  style={{width:'100%'}}  action={this.props.authServer+'/authorize'} method="POST">
+			<form  style={{width:'100%'}}  action={that.props.authServerHostname + this.props.authServer+'/authorize'} method="POST">
 			<input type='hidden' name='response_type'  value={this.state.authRequest.response_type} />
 			<input type='hidden' name='client_id'  value={this.state.authRequest.client_id}/>
 			<input type='hidden' name='client_secret'  value={this.state.authRequest.client_secret}/>
