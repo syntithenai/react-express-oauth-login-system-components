@@ -5,9 +5,14 @@ export default class TermsOfUse extends Component {
     
     render() {
 		 return  (
+         <div>
+         <div style={{textAlign:'center'}}>
+         <h2>Terms of Use/Privacy Policy</h2>
+         </div>
         <div className="termsofuse" style={{textAlign:'left'}} >
         
             <br/>
+            
             <ol>
 <li><span ><strong>Agreement to be bound</strong></span>
 <ol>
@@ -84,7 +89,7 @@ export default class TermsOfUse extends Component {
 </ol>
 </li>
 </ol>
-        </div>
+        </div></div>
 )
 
 }
