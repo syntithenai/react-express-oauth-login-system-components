@@ -1,5 +1,4 @@
-import React, { Component , useState, useEffect} from 'react';
-import {Button} from 'react-bootstrap'
+import React, { Component , useState, useEffect} from 'react'
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 
 export default function ExternalLogin(props)  {	
@@ -77,8 +76,8 @@ export default function ExternalLogin(props)  {
       <div className="App" style={{backgroundColor:'lightblue', width:'100%', height: '1000px'}} >
            
            {JSON.stringify(user)}
-           {!user && <Button onClick={doLogin}>Login</Button>}
-           {user && <Button onClick={doProfile}>Profile</Button>}
-           {user && <Button onClick={doLogout}>Logout</Button>}
+           {!user && <button className="btn btn-lg btn-success btn-block"  onClick={doLogin} type="submit">Login</button>}
+           {user && <button className="btn btn-lg btn-success btn-block"  onClick={doProfile} type="submit">Profile</button>}
+           {user && <button className="btn btn-lg btn-success btn-block" onClick={doLogout} type="submit">Logout</button>}
       </div>)
 }
