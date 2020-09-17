@@ -9,7 +9,13 @@ export default  class LoginSystemContext extends Component {
         super(props);
         // authServer url must be on same domain as website so oauth callback saves refresh cookie to same domain 
         // by default use the relative path /api/login
-        this.state = {user: {}, authServer: process.env.REACT_APP_authServer && process.env.REACT_APP_authServer.trim() ? process.env.REACT_APP_authServer : '/api/login', authServerHostname: props.authServerHostname && props.authServerHostname.trim() ? props.authServerHostname : ''}
+        this.state = {
+            user: {}, 
+            // from props or env vars
+            authServer: props.authServer && props.authServer.trim() ? props.authServer : (process.env.REACT_APP_authServer && process.env.REACT_APP_authServer.trim() ? process.env.REACT_APP_authServer : '/api/login'), 
+            authServerHostname: props.authServerHostname && props.authServerHostname.trim() ? props.authServerHostname : (process.env.REACT_APP_authServerHostname && process.env.REACT_APP_authServerHostname.trim() ? process.env.REACT_APP_authServerHostname : ''),
+            allowedOrigins: props.allowedOrigins ? props.allowedOrigins : (process.env.REACT_APP_allowedOrigins ? process.env.REACT_APP_allowedOrigins.split(",") : [])
+        }
         this.setUser = this.setUser.bind(this)
         this.useRefreshToken = this.useRefreshToken.bind(this)
         this.loadUser = this.loadUser.bind(this)
@@ -35,7 +41,7 @@ export default  class LoginSystemContext extends Component {
             //console.log(["frame MESSAGE", JSON.stringify(event.data), event, event.origin,that.props.allowedOrigins, event.source])
             
             if (event.data && (event.data.check_login || event.data.poll_login )) {
-                if (that.props.allowedOrigins && event.origin.indexOf(that.props.allowedOrigins) !== -1) {
+                if (that.state.allowedOrigins && event.origin.indexOf(that.state.allowedOrigins) !== -1) {
                     if (that.state.user && that.state.user.token) {
                         event.source.postMessage({user:that.state.user && that.state.user.token ? that.state.user : null},event.origin)
                         if (event.data.check_login)  window.close()
