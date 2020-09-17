@@ -3,7 +3,6 @@
 
 import React, { Component } from 'react';
 import {BrowserRouter as Router,Route,Link,Redirect} from 'react-router-dom'
-
 import { ReactComponent as GoogleLogo } from './images/google-brands.svg';
 import { ReactComponent as TwitterLogo } from './images/twitter-brands.svg';
 import { ReactComponent as FacebookLogo } from './images/facebook-brands.svg';
@@ -17,16 +16,20 @@ export default  class Login extends Component {
     
     constructor(props) {
         super(props);
-        this.state={signin_username:'',signin_password:'',rememberme:false};
+        this.state={signin_username:'',signin_password:'',rememberme:false, buttons: [] };
         this.change = this.change.bind(this);
-        //this.submitSignIn = this.submitSignIn.bind(this);
-        
     };
     
     componentDidMount() {
+        let that = this
         if (window.location.search.indexOf('fail=true') !== -1) {
             this.props.submitWarning('Login Failed')
         }
+        var client = getAxiosClient()
+        client.get(this.props.authServerHostname + this.props.authServer+'/buttons').then(function(res) {
+            //console.log(['RD',res.data])
+            that.setState({buttons: res && res.data  && res.data.buttons ? res.data.buttons.split(",") : []  })
+        })
     }
          
     change(e) {
@@ -35,69 +38,12 @@ export default  class Login extends Component {
         this.setState(state);
         return true;
     };
-     
-
-    //submitSignIn(user,pass) {
-       //var that=this;
-        //this.props.submitWarning('');
-        //if (this.props.startWaiting) this.props.startWaiting();
- 
-               //const axiosClient = getAxiosClient();
-               //axiosClient( {
-                  //url: that.props.authServerHostname + that.props.authServer+'/signin',
-                  //method: 'post',
-                  //data: {
-                    //username: user,
-                    //password: pass
-                  //}
-                //})
-                //.then(this.checkStatus)
-                //.then(function(res) {
-                //return res.data;  
-               //})
-              //.then(function(data) {
-                  //const user = data.user
-                  //if (that.props.stopWaiting) that.props.stopWaiting();
-                  //if (data.error) {
-                    //that.props.submitWarning(data.error);
-                  //} else {
-                        //if (data.message) {
-                            //that.props.submitWarning(data.message);
-                        //}
-                        //if (user && user.token && user.token.access_token) {
-                            //let authRequest = localStorage.getItem('auth_request');
-                            //if (authRequest) {
-                                //// using the showButton property, a button will be shown instead of immediate automatic redirect
-                                //if (that.props.showButton) {
-                                    //that.setState({authRequest:authRequest});
-                                //} else {
-                                    //// if there is an auth request pending, jump to that
-                                    //that.props.setUser(user);
-                                    //that.props.history.push(getParentPath(that.props.history)+'/oauth');
-                                //}
-                            //} else {
-                                //that.props.setUser(user);
-                                //window.location = getParentPath(that.props.history)+'/profile'
-                            //}
-                        //}  
-                  //}
-                 
-              //}).catch(function(error) {
-                //console.log(['SIGN IN request failed', error])
-              //});
-          
-    //};
-    
-    
+   
  
     render() {
        let that = this;
-
-        
-
-		let loginButtonsEnabled = this.props.loginButtons && this.props.loginButtons.length > 0 ? this.props.loginButtons : []
-		 let loginButtons = loginButtonsEnabled.map(function(key) {
-			let link = that.props.authServerHostname + that.props.authServer + '/'+ key;
+		 let loginButtons = that.state.buttons.map(function(key) {
+			let link = that.props.authServer + '/'+ key;
 			let title = key.slice(0,1).toUpperCase() + key.slice(1);
 			let image = brandImages[key]
 			return <span key={key} >&nbsp;<a className='btn btn-primary' href={link} >
@@ -126,7 +72,7 @@ export default  class Login extends Component {
          <div style={{float:'right', marginRight:'0.3em',marginLeft:'0.5em'}} className='btn btn-primary' >Register</div>
          </Link>
           <h1 className="h3 mb-3 font-weight-normal" style={{textAlign:'left'}}>Sign in</h1>
-         {loginButtonsEnabled && loginButtonsEnabled.length > 0 && <div style={{float:'right'}}> using {loginButtons}  <br/> </div>}
+         {loginButtons && loginButtons.length > 0 && <div style={{float:'right'}}> using {loginButtons}  <br/> </div>}
              
            <form className="form-signin" method="POST"  action={that.props.authServerHostname + that.props.authServer+'/signin'} >
                              
