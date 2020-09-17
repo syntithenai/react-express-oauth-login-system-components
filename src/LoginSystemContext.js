@@ -31,6 +31,30 @@ export default  class LoginSystemContext extends Component {
             that.setUser(userAndToken)
         })
         
+        function receiveMessage(event) {
+            //console.log(["frame MESSAGE", JSON.stringify(event.data), event, event.origin,that.props.allowedOrigins, event.source])
+            
+            if (event.data && (event.data.check_login || event.data.poll_login )) {
+                if (that.props.allowedOrigins && event.origin.indexOf(that.props.allowedOrigins) !== -1) {
+                    if (that.state.user && that.state.user.token) {
+                        event.source.postMessage({user:that.state.user && that.state.user.token ? that.state.user : null},event.origin)
+                        if (event.data.check_login)  window.close()
+                    } else {
+                        event.source.postMessage({user:that.state.user && that.state.user.token ? that.state.user : null},event.origin)
+                        if (event.data.check_login)  window.close()
+                    }
+                    if (Array.isArray(event.data.allowedPages)) {
+                        var parts = window.location.href ? window.location.href.split("/") : []
+                        if (event.data.allowedPages.indexOf(parts[parts.length -1]) !== -1) {
+                        } else {
+                            window.close()
+                        }
+                    }
+                }
+            }
+        }
+
+        window.addEventListener("message", receiveMessage, false);
     };
    
     
