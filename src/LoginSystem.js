@@ -6,7 +6,6 @@ import Logout from './Logout'
 import Profile from './Profile'
 import Login from './Login'
 import Register from './Register'
-import LoginRedirect from './LoginRedirect'
 import TermsOfUse from './TermsOfUse'
 import ForgotPassword from './ForgotPassword'
 import RegistrationConfirmation from './RegistrationConfirmation'
@@ -25,7 +24,7 @@ export default  class LoginSystem extends Component {
         this.submitWarning = this.submitWarning.bind(this);
         this.refreshTimeout = null
     };
-
+ 
     submitWarning(warning) {
         let that=this;
         clearTimeout(this.timeout);
@@ -56,20 +55,23 @@ export default  class LoginSystem extends Component {
 			return <div className='pending-auth-request' ><Link to={`${that.props.match.url}/auth`} className='btn btn-success'  >Pending Authentication Request</Link></div>
 				
 		} else {
+            var match = that.props.match.path && that.props.match.path === "/" ? '' : that.props.match.path
             return (
 				<div>
                 {this.state.message && <div className='warning-message' style={{zIndex:99,clear:'both', position:'fixed', top: 50, left:200, minWidth: '200 px', backgroundColor:'pink', border:'2px solid red', padding: '1em',  borderRadius:'10px', fontWeight: 'bold', fontSize:'1.1em'}} >{this.state.message}</div>}
           
                 <Router>
-                    <Route  path={`${that.props.match.path}/profile`}  render={(props) => <Profile  {...callBackFunctions}  history={props.history} match={props.match} location={props.location} />}  />
-                    <Route  path={`${that.props.match.path}/login`}  render={(props) => <Login {...callBackFunctions} history={props.history} match={props.match} location={props.location}  />}  />
-                    <Route  path={`${that.props.match.path}/register`}  render={(props) => <Register {...callBackFunctions} history={props.history} match={props.match} location={props.location}  />}  />
-                    <Route  path={`${that.props.match.path}/registerconfirm`}  render={(props) => <RegistrationConfirmation {...callBackFunctions} history={props.history} match={props.match} location={props.location}  />}  />
-                    <Route  path={`${that.props.match.path}/logout`}  render={(props) => <Logout {...callBackFunctions} history={props.history} match={props.match} location={props.location}  />}  />
-                    <Route  path={`${that.props.match.path}/oauth`}  render={(props) => <OAuth {...callBackFunctions}  history={props.history} match={props.match} location={props.location} />}  />
-                    <Route  path={`${that.props.match.path}/forgot`}  render={(props) => <ForgotPassword {...callBackFunctions} history={props.history} match={props.match} location={props.location}  />}  />
-                    <Route  path={`${that.props.match.path}/privacy`}  render={(props) => <TermsOfUse {...callBackFunctions} history={props.history} match={props.match} location={props.location}  />}  />
-                    <Route  path={`${that.props.match.path}/`} exact render={(props) => <LoginRedirect {...callBackFunctions} history={props.history} match={props.match} location={props.location}  />}  />
+                    <Route  path={`${match}/profile`}  render={(props) => <Profile  {...callBackFunctions}  history={props.history} match={props.match} location={props.location} />}  />
+                    <Route  path={`${match}/login`}  render={(props) => <Login {...callBackFunctions} history={props.history} match={props.match} location={props.location}  />}  />
+                    <Route  path={`${match}/register`}  render={(props) => <Register {...callBackFunctions} history={props.history} match={props.match} location={props.location}  />}  />
+                    <Route  path={`${match}/registerconfirm`}  render={(props) => <RegistrationConfirmation {...callBackFunctions} history={props.history} match={props.match} location={props.location}  />}  />
+                    <Route  path={`${match}/logout`}  render={(props) => <Logout {...callBackFunctions} history={props.history} match={props.match} location={props.location}  />}  />
+                    <Route  path={`${match}/oauth`}  render={(props) => <OAuth {...callBackFunctions}  history={props.history} match={props.match} location={props.location} />}  />
+                    <Route  path={`${match}/forgot`}  render={(props) => <ForgotPassword {...callBackFunctions} history={props.history} match={props.match} location={props.location}  />}  />
+                    <Route  path={`${match}/privacy`}  render={(props) => <TermsOfUse {...callBackFunctions} history={props.history} match={props.match} location={props.location}  />}  />
+                    <Route  path={`${match}/`} exact render={(props) => <Login {...callBackFunctions} isRoot={true} history={props.history} match={props.match} location={props.location}  />}  />
+                   
+                    <Route  path={`${match}/blank`} exact render={(props) => <b></b>}  /> 
                     
                 </Router>    
                 </div>

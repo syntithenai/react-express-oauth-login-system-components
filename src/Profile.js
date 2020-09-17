@@ -71,20 +71,7 @@ export default class Profile extends Component {
     
     componentDidMount() {
         let that = this;
-		 var pathParts = that.props.history.location.pathname.split("/")
-       var parentPath = ''
-       if (pathParts[0] && pathParts[0].trim()) {
-            parentPath = "/"+pathParts.slice(0,pathParts.length-1).join("/")
-        } else {
-            // skip leading slash
-            parentPath = "/"+pathParts.slice(1,pathParts.length-1).join("/")
-        }
-		if (this.redirTimeout) clearTimeout(this.redirTimeout)
-        this.redirTimeout = setTimeout(function() {
-                if (!that.props.isLoggedIn()) that.setState({'redirect':parentPath+'/login'})
-        
-        },1000)
-        scrollToTop();
+		scrollToTop();
 	};
     
     
@@ -103,6 +90,7 @@ export default class Profile extends Component {
                 // skip leading slash
                 parentPath = "/"+pathParts.slice(1,pathParts.length-1).join("/")
             }
+            if (parentPath === "/" ) parentPath=""
            return (
             <div> 
                 {this.props.isLoggedIn() && <Link to={parentPath+"/logout"}   >

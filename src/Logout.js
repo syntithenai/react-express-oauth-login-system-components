@@ -1,6 +1,10 @@
 /* global window */
 import  React,{ Component } from 'react';
-import {Redirect} from 'react-router-dom'
+import {Redirect, Link} from 'react-router-dom'
+
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 export default  class Logout extends Component {
   
     componentDidMount() {
@@ -17,7 +21,7 @@ export default  class Logout extends Component {
         if (this.props.logoutRedirect)  {
            //window.location=this.props.logoutRedirect
         } 
-        return <div style={{width:'100%', textAlign:'center', paddingTop:'1em'}} ><b>Logged Out </b></div>
+        return <div style={{width:'100%', textAlign:'center', paddingTop:'1em'}} ><b>Logged Out </b><br/><Link to='../login' ><button className="btn btn-lg btn-success btn-block" type="submit">Login</button></Link></div>
        
     };
 }

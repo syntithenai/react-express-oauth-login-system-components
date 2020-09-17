@@ -77,7 +77,9 @@ export default class Register extends Component {
                 if (data.message) {
                     that.props.submitWarning(data.message);
                 } 
-                that.props.history.push(getParentPath(that.props.history)+'/registerconfirm')
+                var parentPath = getParentPath(that.props.history)
+                 if (parentPath === "/" ) parentPath=""
+                that.props.history.push(parentPath+'/registerconfirm')
             }
       }).catch(function(error) {
         console.log(['request failed', error]);

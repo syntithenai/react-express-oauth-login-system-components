@@ -55,11 +55,14 @@ export default  class Login extends Component {
             {title}
             </a></span>                         
 		 });
-		 
-            var pathParts = that.props.history.location.pathname.split("/")
-            var parentPath = pathParts.slice(0,pathParts.length-1).join("/")
+		   if (that.props.isRoot) {
+               parentPath = that.props.history.location.pathname && that.props.history.location.pathname !== "/" ? that.props.history.location.pathname : ''
+            } else {
+                var pathParts = that.props.history.location.pathname.split("/")
+                var parentPath = pathParts.slice(0,pathParts.length-1).join("/")
+            }
            return <div> 
-          
+         
          {this.props.isLoggedIn() && <Link to={parentPath+'/profile'} style={{clear:'both',display:'inline'}} >
              <div style={{float:'right', marginRight:'0.3em',marginLeft:'0.5em'}} className='btn btn-primary' >Profile</div>
         </Link>}
@@ -88,4 +91,3 @@ export default  class Login extends Component {
        </div>
     };
 }
- //donSubmit={(e) => {e.preventDefault(); console.log('LOGINSSSS'); this.submitSignIn(this.state.signin_username,this.state.signin_password); return false;}}

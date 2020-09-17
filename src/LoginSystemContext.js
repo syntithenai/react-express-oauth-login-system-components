@@ -7,7 +7,9 @@ export default  class LoginSystemContext extends Component {
     
     constructor(props) {
         super(props);
-        this.state = {user: {}}
+        // authServer url must be on same domain as website so oauth callback saves refresh cookie to same domain 
+        // by default use the relative path /api/login
+        this.state = {user: {}, authServer: process.env.REACT_APP_authServer && process.env.REACT_APP_authServer.trim() ? process.env.REACT_APP_authServer : '/api/login', authServerHostname: props.authServerHostname && props.authServerHostname.trim() ? props.authServerHostname : ''}
         this.setUser = this.setUser.bind(this)
         this.useRefreshToken = this.useRefreshToken.bind(this)
         this.loadUser = this.loadUser.bind(this)
@@ -37,7 +39,7 @@ export default  class LoginSystemContext extends Component {
         return new Promise(function(resolve,reject) {
             const axiosClient = getAxiosClient();
             axiosClient( {
-              url: that.props.authServer+'/refresh_token',
+              url: that.state.authServerHostname + that.state.authServer+'/refresh_token',
               method: 'get'
             }).then(function(res) {
                 return res.data;  
@@ -55,6 +57,7 @@ export default  class LoginSystemContext extends Component {
                         resolve(combined)
                     })
                 } else {
+                    console.log(err);
                     resolve({})
                 }
              }).catch(function(err) {
@@ -68,7 +71,7 @@ export default  class LoginSystemContext extends Component {
         return new Promise(function(resolve,reject) {
 			if (accessToken) {
         		const axiosClient = getAxiosClient(accessToken);
-				axiosClient.post(that.props.authServerHostname + that.props.authServer+'/me',{
+				axiosClient.post(that.state.authServerHostname + that.state.authServer+'/me',{
 				})
 				.then(function(res) {
 				  return res.data;  
@@ -91,7 +94,7 @@ export default  class LoginSystemContext extends Component {
 	  this.setState({user:null});
 	  const axiosClient = getAxiosClient(bearerToken);
       return axiosClient( {
-		  url: that.props.authServerHostname + that.props.authServer+'/logout',
+		  url: that.state.authServerHostname + that.state.authServer+'/logout',
 		  method: 'post',
 		  
 		}).catch(function(err) {
@@ -103,7 +106,7 @@ export default  class LoginSystemContext extends Component {
    
   
     render() {
-        return <div>{this.props.children(this.state.user,this.setUser,getAxiosClient,getMediaQueryString,getCsrfQueryString, this.isLoggedIn, this.loadUser, this.useRefreshToken,this.logout)}</div>
+        return <div>{this.props.children(this.state.user,this.setUser,getAxiosClient,getMediaQueryString,getCsrfQueryString, this.isLoggedIn, this.loadUser, this.useRefreshToken,this.logout, this.state.authServer, this.state.authServerHostname)}</div>
     }
     
 }
