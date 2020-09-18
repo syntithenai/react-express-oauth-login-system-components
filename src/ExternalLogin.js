@@ -23,7 +23,6 @@ export default class ExternalLogin   extends Component {
         this.loadUser = this.loadUser.bind(this)
         this.setUser = this.setUser.bind(this)
         this.setCheckLoginIframe = this.setCheckLoginIframe.bind(this)
-        this.iframeRef = React.createRef()
     }
     
     setUser(user) {
@@ -43,25 +42,17 @@ export default class ExternalLogin   extends Component {
      }
     
      receiveMessage(event) {
-        //console.log(['message rec',JSON.stringify(event.data),event.origin, this.props.authServerHostname])
         if (event.origin === this.props.authServerHostname) {
-            //if (event.data.closed_window) {
-                //if (this.pollTimeout) clearTimeout(this.pollTimeout)
-            //} else {
-                //console.log(['messaged set user',event.data.user])
-                this.setUser(event.data.user)
-            //}
+            this.setUser(event.data.user)
         }
     }
    
     // open a window to check login and keep polling for login status updates
      pollIsLoggedIn(popup, allowedPages) {
-        //console.log(['pollisloggedin'])
         let that = this
         if (this.pollTimeout) clearTimeout(this.pollTimeout)
         this.pollTimeout = setTimeout(function() {
             if (popup && !popup.closed) {
-                //console.log(['pollisloggedin send',popup])
                 popup.postMessage({poll_login:true, allowedPages: allowedPages}, that.props.authServerHostname);
                 that.pollIsLoggedIn(popup, allowedPages)
             }
@@ -73,7 +64,6 @@ export default class ExternalLogin   extends Component {
         if (this.pollTimeout) clearTimeout(this.pollTimeout)
         this.pollTimeout = setTimeout(function() {
             if (popup) {
-                //console.log(['checklogin send message',that.props.authServerHostname ])
                 popup.postMessage({check_login:true}, that.props.authServerHostname);
             }
         },500)
@@ -82,22 +72,13 @@ export default class ExternalLogin   extends Component {
     // open an iframe to check login then close it when it responds
      checkLogin() {
          var url = this.props.authServerHostname + this.props.authWeb + "/blank"
-         //console.log(['checklogin',url])
-         
-        //var popup = window.open(url,'mywin','resizable=no, scrollbars=no, status=no, width=1,height=1, top: 0, left:'+window.screen.availHeight+10);
         var i = document.createElement('iframe');
         i.style.display = 'none';
-        //i.onload = function() { i.parentNode.removeChild(i); };
         i.src = url
         document.body.appendChild(i);
         var popup = i.contentWindow;
-        //this.setCheckLoginIframe
         this.checkIsLoggedIn(popup)
     }
-    
-    //loginIframeLoaded() {
-        //var wn = document.getElementById('ifrm').contentWindow;
-    //}
     
 
      doLogin() {
@@ -152,14 +133,4 @@ export default class ExternalLogin   extends Component {
       
       </div>
     }
-      //{this.state.checkLoginIframe && <iframe ref={this.iframeRef} src={this.state.checkLoginIframe} style={{}} />}
-     
-      //(
-      //<>
-           
-           //{JSON.stringify(user)}
-           //{!user && <button className="btn btn-lg btn-success btn-block"  onClick={doLogin} type="submit">Login</button>}
-           //{user && <button className="btn btn-lg btn-success btn-block"  onClick={doProfile} type="submit">Profile</button>}
-           //{user && <button className="btn btn-lg btn-success btn-block" onClick={doLogout} type="submit">Logout</button>}
-      //</>)
 }
