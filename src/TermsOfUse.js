@@ -4,8 +4,11 @@ import React, { Component } from 'react';
 export default class TermsOfUse extends Component {
     
     render() {
-		 return  (
+        var standalone = (this.props.allowedOrigins && this.props.allowedOrigins.length > 0) ? true : false
+        return  (
          <div>
+                {standalone && <button className='btn btn-danger' style={{float:'right', marginLeft:'3em'}} onClick={function() {window.close()}}>
+                 Close</button>}
          <div style={{textAlign:'center'}}>
          <h2>Terms of Use/Privacy Policy</h2>
          </div>

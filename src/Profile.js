@@ -91,13 +91,17 @@ export default class Profile extends Component {
                 parentPath = "/"+pathParts.slice(1,pathParts.length-1).join("/")
             }
             if (parentPath === "/" ) parentPath=""
+            var standalone = (this.props.allowedOrigins && this.props.allowedOrigins.length > 0) ? true : false
            return (
             <div> 
+                
+                {standalone && <button className='btn btn-danger' style={{float:'right', marginLeft:'3em'}} onClick={function() {window.close()}}>
+                 Close</button>}
                 {this.props.isLoggedIn() && <Link to={parentPath+"/logout"}   >
-                <button className='btn btn-danger' style={{float:'right'}} >
+                <button className='btn btn-warning' style={{float:'right'}} >
                 <LogoutButton  /> Logout</button></Link>}
                 
-                {<Link to={parentPath+'/login'} style={{clear:'both',display:'inline'}} >
+                {!standalone && <Link to={parentPath+'/login'} style={{clear:'both',display:'inline'}} >
                      <button style={{float:'right', marginRight:'0.3em',marginLeft:'0.5em'}} className='btn btn-primary' >Login</button>
                 </Link>}
                 

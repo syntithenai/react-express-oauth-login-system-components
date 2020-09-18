@@ -2,6 +2,15 @@
 import React, { Component } from 'react';
 
 export default class RegistrationConfirmation extends Component {
+     
+    componentDidMount() {
+        let that = this
+        var standalone = (that.props.allowedOrigins && that.props.allowedOrigins.length > 0) ? true : false
+                      
+      setTimeout(function() {
+        if (standalone) window.close()
+      },5000)   
+    }
     
     render() {
 		 return  (

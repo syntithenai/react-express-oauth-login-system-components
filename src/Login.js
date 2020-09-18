@@ -42,6 +42,7 @@ export default  class Login extends Component {
  
     render() {
        let that = this;
+       var standalone = (this.props.allowedOrigins && this.props.allowedOrigins.length > 0) ? true : false
 		 let loginButtons = that.state.buttons.map(function(key) {
 			let link = that.props.authServer + '/'+ key;
 			let title = key.slice(0,1).toUpperCase() + key.slice(1);
@@ -62,8 +63,11 @@ export default  class Login extends Component {
                 var parentPath = pathParts.slice(0,pathParts.length-1).join("/")
             }
            return <div> 
-         
-         {this.props.isLoggedIn() && <Link to={parentPath+'/profile'} style={{clear:'both',display:'inline'}} >
+          
+                {standalone && <button className='btn btn-danger' style={{float:'right', marginLeft:'3em'}} onClick={function() {window.close()}}>
+                 Close</button>}
+                 
+         {(!standalone && this.props.isLoggedIn()) && <Link to={parentPath+'/profile'} style={{clear:'both',display:'inline'}} >
              <div style={{float:'right', marginRight:'0.3em',marginLeft:'0.5em'}} className='btn btn-primary' >Profile</div>
         </Link>}
          

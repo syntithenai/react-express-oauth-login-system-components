@@ -38,21 +38,28 @@ export default  class LoginSystemContext extends Component {
         })
         
         function receiveMessage(event) {
-            //console.log(["frame MESSAGE", JSON.stringify(event.data), event, event.origin,that.props.allowedOrigins, event.source])
-            
-            if (event.data && (event.data.check_login || event.data.poll_login )) {
+             //console.log(["frame MESSAGE", JSON.stringify(event.data), event, event.origin,that.props.allowedOrigins, event.source])
+               
+             if (event.data && (event.data.check_login || event.data.poll_login )) {
                 if (that.state.allowedOrigins && event.origin.indexOf(that.state.allowedOrigins) !== -1) {
-                    if (that.state.user && that.state.user.token) {
-                        event.source.postMessage({user:that.state.user && that.state.user.token ? that.state.user : null},event.origin)
-                        if (event.data.check_login)  window.close()
-                    } else {
-                        event.source.postMessage({user:that.state.user && that.state.user.token ? that.state.user : null},event.origin)
-                        if (event.data.check_login)  window.close()
+                    //if (that.state.user && that.state.user.token) {
+                    event.source.postMessage({user:that.state.user && that.state.user.token ? that.state.user : null},event.origin)
+                    if (event.data.check_login)  {
+                        //event.source.postMessage({closed_window: true},event.origin)
+                        window.close()
                     }
+                    //} else {
+                        //event.source.postMessage({user:that.state.user && that.state.user.token ? that.state.user : null},event.origin)
+                        //if (event.data.check_login)  {
+                            //event.source.postMessage({closed_window: true},event.origin)
+                            //window.close()
+                        //}
+                    //}
                     if (Array.isArray(event.data.allowedPages)) {
                         var parts = window.location.href ? window.location.href.split("/") : []
                         if (event.data.allowedPages.indexOf(parts[parts.length -1]) !== -1) {
                         } else {
+                            //event.source.postMessage({closed_window: true},event.origin)    
                             window.close()
                         }
                     }
@@ -87,7 +94,6 @@ export default  class LoginSystemContext extends Component {
                         resolve(combined)
                     })
                 } else {
-                    console.log(err);
                     resolve({})
                 }
              }).catch(function(err) {
@@ -136,7 +142,7 @@ export default  class LoginSystemContext extends Component {
    
   
     render() {
-        return <div>{this.props.children(this.state.user,this.setUser,getAxiosClient,getMediaQueryString,getCsrfQueryString, this.isLoggedIn, this.loadUser, this.useRefreshToken,this.logout, this.state.authServer, this.state.authServerHostname)}</div>
+        return <div>{this.props.children(this.state.user,this.setUser,getAxiosClient,getMediaQueryString,getCsrfQueryString, this.isLoggedIn, this.loadUser, this.useRefreshToken,this.logout, this.state.authServer, this.state.authServerHostname, this.state.allowedOrigins)}</div>
     }
     
 }

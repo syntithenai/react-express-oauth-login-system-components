@@ -90,7 +90,8 @@ export default class Register extends Component {
         let that = this;
         var pathParts = that.props.history.location.pathname.split("/")
         var parentPath = pathParts.slice(0,pathParts.length-1).join("/")
-        return (
+         var standalone = (this.props.allowedOrigins && this.props.allowedOrigins.length > 0) ? true : false
+         return (
             <div id="registrationform" >
                 
                 <div style={{paddingLeft:'1em',clear:'both'}}>
@@ -98,6 +99,8 @@ export default class Register extends Component {
                     <form className="col-lg-12" style={{minWidth: '400px'}} method="POST" onSubmit={(e) => this.submitSignUp(e)}  >
                             <div className="form-group">
                          
+                        {standalone && <button className='btn btn-danger' style={{float:'right', marginLeft:'3em'}} onClick={function() {window.close()}}>
+                         Close</button>}
                          <Link to={parentPath+"/forgot"} ><div style={{float:'right', marginRight:'0.3em',marginLeft:'0.5em'}} className='btn btn-primary' >Forgot Password</div></Link>
                            <Link to={parentPath+"/login"} style={{clear:'both',display:'inline'}} ><div style={{float:'right', marginRight:'0.3em',marginLeft:'0.5em'}} className='btn btn-primary' >Login</div></Link>
                            
