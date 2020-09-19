@@ -42,25 +42,14 @@ export default  class LoginSystemContext extends Component {
                
              if (event.data && (event.data.check_login || event.data.poll_login )) {
                 if (that.state.allowedOrigins && event.origin.indexOf(that.state.allowedOrigins) !== -1) {
-                    //if (that.state.user && that.state.user.token) {
                     event.source.postMessage({user:that.state.user && that.state.user.token ? that.state.user : null},event.origin)
-                    if (event.data.check_login)  {
-                        //event.source.postMessage({closed_window: true},event.origin)
-                        window.close()
-                    }
-                    //} else {
-                        //event.source.postMessage({user:that.state.user && that.state.user.token ? that.state.user : null},event.origin)
-                        //if (event.data.check_login)  {
-                            //event.source.postMessage({closed_window: true},event.origin)
-                            //window.close()
-                        //}
-                    //}
                     if (Array.isArray(event.data.allowedPages)) {
                         var parts = window.location.href ? window.location.href.split("/") : []
                         if (event.data.allowedPages.indexOf(parts[parts.length -1]) !== -1) {
                         } else {
-                            //event.source.postMessage({closed_window: true},event.origin)    
-                            window.close()
+                            setTimeout(function() {
+                                window.close()
+                            },1000)
                         }
                     }
                 }

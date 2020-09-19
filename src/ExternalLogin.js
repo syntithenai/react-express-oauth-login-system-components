@@ -69,15 +69,19 @@ export default class ExternalLogin   extends Component {
         },500)
     }
 
-    // open an iframe to check login then close it when it responds
+    // open an iframe to check login 
      checkLogin() {
-         var url = this.props.authServerHostname + this.props.authWeb + "/blank"
+        var that = this
+        var url = this.props.authServerHostname + this.props.authWeb + "/blank"
         var i = document.createElement('iframe');
         i.style.display = 'none';
         i.src = url
+        i.onload = function() {
+            var popup = i.contentWindow;
+            that.checkIsLoggedIn(popup)
+        }
         document.body.appendChild(i);
-        var popup = i.contentWindow;
-        this.checkIsLoggedIn(popup)
+        
     }
     
 
