@@ -38,18 +38,19 @@ export default  class LoginSystemContext extends Component {
         })
         
         function receiveMessage(event) {
-             //console.log(["frame MESSAGE", JSON.stringify(event.data), event, event.origin,that.props.allowedOrigins, event.source])
+             //console.log(["frame MESSAGE", JSON.stringify(event.data), event, event.origin,that.state.allowedOrigins, event.source])
                
              if (event.data && (event.data.check_login || event.data.poll_login )) {
-                if (that.state.allowedOrigins && event.origin.indexOf(that.state.allowedOrigins) !== -1) {
-                    event.source.postMessage({user:that.state.user && that.state.user.token ? that.state.user : null},event.origin)
+                if (that.state.allowedOrigins && that.state.allowedOrigins.indexOf(event.origin) !== -1) {
+                     //console.log(["return frame MESSAGE",{user:that.state.user && that.state.user.token ? that.state.user : null},event.origin])
+                    event.source.postMessage({user:that.state.user && that.state.user.token && that.state.user.username && that.state.user.username.trim() ? that.state.user : null},event.origin)
                     if (Array.isArray(event.data.allowedPages)) {
                         var parts = window.location.href ? window.location.href.split("/") : []
                         if (event.data.allowedPages.indexOf(parts[parts.length -1]) !== -1) {
                         } else {
                             setTimeout(function() {
                                 window.close()
-                            },1000)
+                            },2000)
                         }
                     }
                 }

@@ -42,7 +42,9 @@ export default class ExternalLogin   extends Component {
      }
     
      receiveMessage(event) {
+         //console.log(['msg',event.origin,event.data,event.source])
         if (event.origin === this.props.authServerHostname) {
+            //console.log(['msgOK',event.origin,event.data,event.source])
             this.setUser(event.data.user)
         }
     }
@@ -53,6 +55,7 @@ export default class ExternalLogin   extends Component {
         if (this.pollTimeout) clearTimeout(this.pollTimeout)
         this.pollTimeout = setTimeout(function() {
             if (popup && !popup.closed) {
+                //console.log(['send msg',{poll_login:true, allowedPages: allowedPages}, that.props.authServerHostname])
                 popup.postMessage({poll_login:true, allowedPages: allowedPages}, that.props.authServerHostname);
                 that.pollIsLoggedIn(popup, allowedPages)
             }
@@ -64,6 +67,8 @@ export default class ExternalLogin   extends Component {
         if (this.pollTimeout) clearTimeout(this.pollTimeout)
         this.pollTimeout = setTimeout(function() {
             if (popup) {
+                //console.log(['send iframe msg',{check_login:true}, that.props.authServerHostname])
+                
                 popup.postMessage({check_login:true}, that.props.authServerHostname);
             }
         },500)
