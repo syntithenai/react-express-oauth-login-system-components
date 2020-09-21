@@ -45,7 +45,7 @@ export default class ExternalLogin   extends Component {
         if (event.origin === this.props.authServerHostname) {
             console.log(['msgOK',event.origin,event.data,event.source])
             this.setUser(event.data.user)
-            this.loginPopup.close()
+            if (this.loginPopup) this.loginPopup.close()
         }
     }
    
