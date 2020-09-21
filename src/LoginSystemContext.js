@@ -35,29 +35,35 @@ export default  class LoginSystemContext extends Component {
         let that=this;
         this.useRefreshToken().then(function(userAndToken) { 
             that.setUser(userAndToken)
+            window.addEventListener("message", receiveMessage, false);
         })
         
         function receiveMessage(event) {
-             //console.log(["frame MESSAGE", JSON.stringify(event.data), event, event.origin,that.state.allowedOrigins, event.source])
-               
-             if (event.data && (event.data.check_login || event.data.poll_login )) {
-                if (that.state.allowedOrigins && that.state.allowedOrigins.indexOf(event.origin) !== -1) {
-                     //console.log(["return frame MESSAGE",{user:that.state.user && that.state.user.token ? that.state.user : null},event.origin])
+             console.log(["frame MESSAGE", JSON.stringify(event.data), event, event.origin,that.state.allowedOrigins, event.source])
+             
+             // only handle messages if allowedOrigins is set and message comes from an allowedOrigin  
+             if (that.state.allowedOrigins && that.state.allowedOrigins.indexOf(event.origin) !== -1) {  
+                // poll login status
+                if (event.data && event.data.check_login) {
+                    // send null unless token AND user are loaded
+                    console.log(["return frame MESSAGE",{user:that.state.user && that.state.user.token ? that.state.user : null},event.origin])
                     event.source.postMessage({user:that.state.user && that.state.user.token && that.state.user.username && that.state.user.username.trim() ? that.state.user : null},event.origin)
-                    if (Array.isArray(event.data.allowedPages)) {
-                        var parts = window.location.href ? window.location.href.split("/") : []
-                        if (event.data.allowedPages.indexOf(parts[parts.length -1]) !== -1) {
-                        } else {
-                            setTimeout(function() {
-                                window.close()
-                            },2000)
-                        }
+                // close window when location changes from an allowedPage
+                }
+                if (event.data && event.data.allowedPages && Array.isArray(event.data.allowedPages)) {
+                    var parts = window.location.href ? window.location.href.split("/") : []
+                    console.log(["close win ?"])
+                    if (event.data.allowedPages.indexOf(parts[parts.length -1]) === -1) {
+                        //setTimeout(function() {
+                            window.close()
+                        //},2000)
                     }
+                
                 }
             }
         }
 
-        window.addEventListener("message", receiveMessage, false);
+        
     };
    
     
@@ -72,7 +78,7 @@ export default  class LoginSystemContext extends Component {
                 return res.data;  
             }).then(function(res) {
                 if (res.access_token) {
-                    that.setUser({token:res})
+                    //that.setUser({token:res})
                     that.loadUser(res.access_token).then(function(user) {
                         var combined = Object.assign({},user,{token:res})
                         if (that.refreshTimeout) clearTimeout(that.refreshTimeout)

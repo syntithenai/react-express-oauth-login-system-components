@@ -2,18 +2,17 @@ import React, { Component } from 'react'
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 import {getAxiosClient,getMediaQueryString,getCsrfQueryString} from './helpers'  
 
-
 export default class ExternalLogin   extends Component {
-  
   
    constructor(props) {
         super(props)
         var that = this
         this.state = {user:null, checkLoginIframe: null}
-        
-        this.pollTimeout = null
+        this.loginPopup = null
+        this.pollLoginTimeout = null
+        this.pollCloseTimeout = null
         this.receiveMessage = this.receiveMessage.bind(this)
-        this.pollIsLoggedIn = this.pollIsLoggedIn.bind(this)
+        this.pollShouldClose = this.pollShouldClose.bind(this)
         this.checkIsLoggedIn = this.checkIsLoggedIn.bind(this)
         this.checkLogin = this.checkLogin.bind(this)
         this.doLogin = this.doLogin.bind(this)
@@ -38,54 +37,66 @@ export default class ExternalLogin   extends Component {
         window.addEventListener("message", this.receiveMessage, false); 
         setTimeout(function() {
             that.checkLogin()
-        },500)
+        },1000)
      }
     
      receiveMessage(event) {
-         //console.log(['msg',event.origin,event.data,event.source])
+         console.log(['msg',event.origin,event.data,event.source])
         if (event.origin === this.props.authServerHostname) {
-            //console.log(['msgOK',event.origin,event.data,event.source])
+            console.log(['msgOK',event.origin,event.data,event.source])
             this.setUser(event.data.user)
+            this.loginPopup.close()
         }
     }
    
     // open a window to check login and keep polling for login status updates
-     pollIsLoggedIn(popup, allowedPages) {
+     pollShouldClose(popup, allowedPages) {
         let that = this
         if (this.pollTimeout) clearTimeout(this.pollTimeout)
         this.pollTimeout = setTimeout(function() {
             if (popup && !popup.closed) {
-                //console.log(['send msg',{poll_login:true, allowedPages: allowedPages}, that.props.authServerHostname])
-                popup.postMessage({poll_login:true, allowedPages: allowedPages}, that.props.authServerHostname);
-                that.pollIsLoggedIn(popup, allowedPages)
+                console.log(['send msg',{check_login:true, allowedPages: allowedPages}, that.props.authServerHostname])
+                popup.postMessage({check_login:true, allowedPages: allowedPages}, that.props.authServerHostname);
+                that.pollShouldClose(popup, allowedPages)
             }
         },500)
     }
     // open a window to check login then close it when it responds
-     checkIsLoggedIn(popup) {
+     checkIsLoggedIn(popup, count = 0) {
         let that = this
-        if (this.pollTimeout) clearTimeout(this.pollTimeout)
-        this.pollTimeout = setTimeout(function() {
-            if (popup) {
-                //console.log(['send iframe msg',{check_login:true}, that.props.authServerHostname])
-                
+        if (this.pollLoginTimeout) clearTimeout(this.pollLoginTimeout)
+        this.pollLoginTimeout = setTimeout(function() {
+            if (popup && count < 10) {
+                console.log([count,'send iframe login msg',{check_login:true}, that.props.authServerHostname])
                 popup.postMessage({check_login:true}, that.props.authServerHostname);
+                that.checkIsLoggedIn(popup, count+1)
             }
-        },500)
+        },1000)
     }
 
     // open an iframe to check login 
      checkLogin() {
         var that = this
         var url = this.props.authServerHostname + this.props.authWeb + "/blank"
-        var i = document.createElement('iframe');
-        i.style.display = 'none';
-        i.src = url
-        i.onload = function() {
-            var popup = i.contentWindow;
-            that.checkIsLoggedIn(popup)
-        }
-        document.body.appendChild(i);
+        //var i = document.createElement('iframe');
+        ////i.style.display = 'none';
+        //i.src = url
+        //i.onload = function() {
+            //var popup = i.contentWindow;
+            //that.checkIsLoggedIn(popup)
+        //}
+        //document.body.appendChild(i);
+        //var popup = window.open(url, `toolbar=no,
+                                    //location=no,
+                                    //status=no,
+                                    //menubar=no,
+                                    //scrollbars=no,
+                                    //resizable=no,
+                                    //width=10,
+                                    //height=10`)
+        //popup.resizeTo(1,1); 
+        this.loginPopup = window.open(url,'mywin','resizable=no, scrollbars=no, status=no, width=10,height=10, top: 0, left:'+window.screen.availHeight+10);
+        that.checkIsLoggedIn(this.loginPopup)
         
     }
     
@@ -93,19 +104,19 @@ export default class ExternalLogin   extends Component {
      doLogin() {
         var url = this.props.authServerHostname  + this.props.authWeb+ '/login'
         var popup = window.open(url,'mywin')
-        this.pollIsLoggedIn(popup,['login','register','forgot','registerconfirm','privacy'])
+        this.pollShouldClose(popup,['login','register','forgot','registerconfirm','privacy'])
     }
     
      doProfile() {
         var url = this.props.authServerHostname + this.props.authWeb + '/profile'
         var popup = window.open(url,'mywin')
-        this.pollIsLoggedIn(popup,['profile','logout'])
+        this.pollShouldClose(popup,['profile','logout'])
     }
     
     doLogout() {
         var url = this.props.authServerHostname + this.props.authWeb + '/logout'
         var popup = window.open(url,'mywin')
-        this.pollIsLoggedIn(popup,['logout'])
+        this.pollShouldClose(popup,['logout'])
         
     }
 	     

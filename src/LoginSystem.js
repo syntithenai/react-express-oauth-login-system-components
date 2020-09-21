@@ -72,7 +72,7 @@ export default  class LoginSystem extends Component {
                     <Route  path={`${match}/privacy`}  render={(props) => <TermsOfUse {...callBackFunctions} history={props.history} match={props.match} location={props.location}  />}  />
                     <Route  path={`${match}/`} exact render={(props) => <Login {...callBackFunctions} isRoot={true} history={props.history} match={props.match} location={props.location}  />}  />
                    
-                    <Route  path={`${match}/blank`} exact render={(props) => <b></b>}  /> 
+                    <Route  path={`${match}/blank`} exact render={(props) => <b>Checking Login ....</b>}  /> 
                     
                 </Router>    
                 </div>
