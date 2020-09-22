@@ -13,7 +13,7 @@ export default  class LoginSystemContext extends Component {
             user: {}, 
             // from props or env vars
             authServer: props.authServer && props.authServer.trim() ? props.authServer : (process.env.REACT_APP_authServer && process.env.REACT_APP_authServer.trim() ? process.env.REACT_APP_authServer : '/api/login'), 
-            authServerHostname: props.authServerHostname && props.authServerHostname.trim() ? props.authServerHostname : (process.env.REACT_APP_authServerHostname && process.env.REACT_APP_authServerHostname.trim() ? process.env.REACT_APP_authServerHostname : ''),
+            authServerHostname: props.authServerHostname && props.authServerHostname.trim() ? props.authServerHostname : (process.env.REACT_APP_authServerHostname && process.env.REACT_APP_authServerHostname.trim() ? process.env.REACT_APP_authServerHostname : window.location.origin),
             allowedOrigins: props.allowedOrigins ? props.allowedOrigins : (process.env.REACT_APP_allowedOrigins ? process.env.REACT_APP_allowedOrigins.split(",") : [])
         }
         this.setUser = this.setUser.bind(this)
