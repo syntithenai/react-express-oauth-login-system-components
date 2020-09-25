@@ -1,5 +1,6 @@
 import axios from 'axios'  
 import md5 from 'md5'
+import https from 'https'
 
 function getCookie(name) {
 	var nameEQ = name + "=";
@@ -30,7 +31,7 @@ function scrollToTop() {
 }
 
     function getParentPath(history) {
-         var pathParts = history.location.pathname.split("/")
+       var pathParts = history.location.pathname.split("/")
        var parentPath = ''
        if (pathParts[0] && pathParts[0].trim()) {
             parentPath = "/"+pathParts.slice(0,pathParts.length-1).join("/")
@@ -44,14 +45,17 @@ function scrollToTop() {
 
 function getAxiosClient(accessToken)	{
 	
-	let axiosOptions={};
+	let axiosOptions={httpsAgent: new https.Agent({  
+        rejectUnauthorized: false
+    })};
+    axiosOptions.headers = {}
 	let cookie = getCookie('csrf-token');
 	if (cookie && cookie.trim().length > 0) {
 		// csrf header
-		axiosOptions.headers = {'x-csrf-token': cookie}
+		axiosOptions.headers['x-csrf-token'] = cookie
 		// add auth headers 
-		if (accessToken && accessToken.length > 0)  axiosOptions.headers['Authorization'] = 'Bearer '+accessToken
 	}
+    if (accessToken && accessToken.length > 0)  axiosOptions.headers['Authorization'] = 'Bearer '+accessToken
 	return axios.create(axiosOptions);
 }
 
