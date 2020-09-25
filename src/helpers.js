@@ -39,7 +39,7 @@ function scrollToTop() {
             // skip leading slash
             parentPath = "/"+pathParts.slice(1,pathParts.length-1).join("/")
         }
-        console.log(['PP',parentPath])
+        //console.log(['PP',parentPath])
         return parentPath
     } 
 

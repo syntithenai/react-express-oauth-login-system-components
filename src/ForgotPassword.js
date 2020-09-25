@@ -57,7 +57,7 @@ export default  class ForgotPassword extends Component {
             }
             
       }).catch(function(error) {
-        console.log(['recover request failed', error])
+        //console.log(['recover request failed', error])
       });
         return false;
     };
