@@ -41,9 +41,9 @@ export default class ExternalLogin   extends Component {
      }
     
      receiveMessage(event) {
-         console.log(['msg',event.origin,event.data,event.source])
+         //console.log(['msg',event.origin,event.data,event.source])
         if (event.origin === this.props.authServerHostname) {
-            console.log(['msgOK',event.origin,event.data,event.source])
+            //console.log(['msgOK',event.origin,event.data,event.source])
             this.setUser(event.data.user)
             if (this.loginPopup) this.loginPopup.close()
         }
@@ -55,7 +55,7 @@ export default class ExternalLogin   extends Component {
         if (this.pollTimeout) clearTimeout(this.pollTimeout)
         this.pollTimeout = setTimeout(function() {
             if (popup && !popup.closed) {
-                console.log(['send msg',{check_login:true, allowedPages: allowedPages}, that.props.authServerHostname])
+                //console.log(['send msg',{check_login:true, allowedPages: allowedPages}, that.props.authServerHostname])
                 popup.postMessage({check_login:true, allowedPages: allowedPages}, that.props.authServerHostname);
                 that.pollShouldClose(popup, allowedPages)
             }
@@ -67,7 +67,7 @@ export default class ExternalLogin   extends Component {
         if (this.pollLoginTimeout) clearTimeout(this.pollLoginTimeout)
         this.pollLoginTimeout = setTimeout(function() {
             if (popup && count < 10) {
-                console.log([count,'send iframe login msg',{check_login:true}, that.props.authServerHostname])
+                //console.log([count,'send iframe login msg',{check_login:true}, that.props.authServerHostname])
                 popup.postMessage({check_login:true}, that.props.authServerHostname);
                 that.checkIsLoggedIn(popup, count+1)
             }
