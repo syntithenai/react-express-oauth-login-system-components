@@ -44,7 +44,7 @@ function scrollToTop() {
     } 
 
 function getAxiosClient(accessToken)	{
-	
+	console.log(['get axios client ',accessToken])
 	let axiosOptions={httpsAgent: new https.Agent({  
         rejectUnauthorized: false
     })};
@@ -55,7 +55,10 @@ function getAxiosClient(accessToken)	{
 		axiosOptions.headers['x-csrf-token'] = cookie
 		// add auth headers 
 	}
-    if (accessToken && accessToken.length > 0)  axiosOptions.headers['Authorization'] = 'Bearer '+accessToken
+    if (accessToken && accessToken.length > 0)  {
+     //   axiosOptions.headers['Authorization'] = 'Bearer '+accessToken
+        axios.defaults.headers.common['Authorization'] = 'Bearer '+accessToken;
+    }
 	return axios.create(axiosOptions);
 }
 
